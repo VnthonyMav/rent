@@ -1,0 +1,27 @@
+name: CI Docker Build & Push
+
+# Le script se lance à chaque 'push' sur la branche main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # GitHub utilise une VM Ubuntu pour travailler
+
+    steps:
+      - name: 1. Récupérer le code
+        uses: actions/checkout@v3
+
+      - name: 2. Se connecter au Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 3. Construire et envoyer l'image Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: ./MyService
+          push: true
+          tags: TON_PSEUDO_DOCKER/mon-api-rent:latest
